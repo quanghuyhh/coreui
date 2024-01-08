@@ -19,14 +19,14 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.roles.index') }}" wire:navigate>
                     <svg class="nav-icon">
-                        <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-drop"></use>
+                        <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-drop') }}"></use>
                     </svg> Roles
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.schools.index') }}" wire:navigate>
                     <svg class="nav-icon">
-                        <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-drop"></use>
+                        <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-drop') }}"></use>
                     </svg> Schools
                 </a>
             </li>
@@ -34,7 +34,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="" wire:navigate>
                     <svg class="nav-icon">
-                        <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-drop"></use>
+                        <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-drop') }}"></use>
                     </svg> Teacher Menu
                 </a>
             </li>

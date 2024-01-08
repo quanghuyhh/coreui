@@ -15,21 +15,21 @@
             <li class="nav-item">
                 <a class="nav-link" href="#">
                     <svg class="icon icon-lg">
-                        <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-bell"></use>
+                        <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-bell') }}"></use>
                     </svg>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
                     <svg class="icon icon-lg">
-                        <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-list-rich"></use>
+                        <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-list-rich') }}"></use>
                     </svg>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
                     <svg class="icon icon-lg">
-                        <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-envelope-open"></use>
+                        <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-envelope-open') }}"></use>
                     </svg>
                 </a>
             </li>
