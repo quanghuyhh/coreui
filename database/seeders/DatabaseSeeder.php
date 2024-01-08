@@ -23,6 +23,9 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
+        User::truncate();
+        School::truncate();
+        UserRole::truncate();
         $schools = School::factory(3)->create();
         foreach (range(1, 10) as $index) {
             $user = User::factory()->create();

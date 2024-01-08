@@ -50,6 +50,7 @@
     <!-- We use those styles to show code examples, you should remove them in your application.-->
     <link href="{{ asset('/assets/admin/css/examples.css') }}" rel="stylesheet">
     <link href="{{ asset('/assets/admin/vendors/@coreui/chartjs/css/coreui-chartjs.css') }}" rel="stylesheet">
+    @vite(['resources/scss/style.scss'])
     @livewireStyles
 </head>
 <body>

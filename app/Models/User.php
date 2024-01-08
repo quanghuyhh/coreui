@@ -3,9 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\RoleEnum;
+use App\Services\RoleService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -51,5 +54,15 @@ class User extends Authenticatable
     public function schools()
     {
         return $this->belongsToMany(School::class, UserRole::class);
+    }
+
+    public function isManager()
+    {
+        return app(RoleService::class)->hasPermission(
+            join('|', [
+                Str::lower(RoleEnum::MANAGER->name),
+                Str::lower(RoleEnum::HEADQUARTER->name),
+            ])
+        );
     }
 }

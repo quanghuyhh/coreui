@@ -39,6 +39,7 @@
     <link href="{{ asset('/assets/admin/css/style.css') }}" rel="stylesheet">
     <!-- We use those styles to show code examples, you should remove them in your application.-->
     <link href="{{ asset('/assets/admin/css/examples.css') }}" rel="stylesheet">
+
     @livewireStyles
 </head>
 <body>
@@ -52,6 +53,7 @@
 <!-- CoreUI and necessary plugins-->
 <script src="{{ asset('/assets/admin/vendors/@coreui/coreui/js/coreui.bundle.min.js') }}"></script>
 <script src="{{ asset('/assets/admin/vendors/simplebar/js/simplebar.min.js') }}"></script>
+@vite(['resources/scss/style.scss'])
 @livewireScripts
 <script>
 </script>

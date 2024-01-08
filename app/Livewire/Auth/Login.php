@@ -45,6 +45,10 @@ class Login extends Component
             ]);
         }
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->intended(
+            auth()->user()->isManager()
+                ? config('role.manager')
+                : config('role.teacher')
+        );
     }
 }

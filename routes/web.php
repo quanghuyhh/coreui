@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TeacherController;
 use Illuminate\Support\Facades\Route;
 
@@ -48,13 +49,13 @@ Route::middleware('auth')->group(function () {
         ->name('logout');
 });
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('auth');
 
 Route::group(['middleware' => 'web'], function() {
     Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'role:manager'], function () {
         Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+        Route::view('/schools', 'school.index')->name('schools.index');
+        Route::view('/roles', 'role.index')->name('roles.index');
     });
 
     Route::group(['prefix' => 'teacher', 'as' => 'teacher.', 'middleware' => 'role:teacher'], function () {
