@@ -24,10 +24,14 @@ class CreateForm extends Component
     {
         $this->month = Carbon::now()->format('Y-m');
         $this->availableDates[] = Carbon::now()->format('Y-m-d');
+
+        $start = Carbon::now()->startOfHour()->format('H:m');
+        $end = Carbon::now()->startOfHour()->addHours(2)->format('H:m');
+        $key = sprintf("%s-%s", $start, $end);
         $this->availableTimes = [
-            [
-                'start' => Carbon::now()->startOfHour()->format('H:m'),
-                'end' => Carbon::now()->startOfHour()->addHours(2)->format('H:m'),
+            $key => [
+                'start' => $start,
+                'end' => $end,
             ]
         ];
     }
@@ -84,10 +88,7 @@ class CreateForm extends Component
             ];
         }
 
-        $shiftSlots = [];
-        foreach ($this->shiftSlots as $slots) {
-            $shiftSlots[] = $slots;
-        }
+        $shiftSlots = $this->reGenerateSlots();
 
         $shift->data = [
             'times' => $times,
@@ -97,5 +98,49 @@ class CreateForm extends Component
         ];
         $shift->save();
         return redirect()->route('admin.shifts.index');
+    }
+
+    public function checkAllDate($date, $isChecked)
+    {
+        if (!$isChecked) {
+            unset($this->shiftSlots[$date]);
+        } else {
+            foreach ($this->availableTimes as $key => $time) {
+                $slots[$key] = 1;
+            }
+            $this->shiftSlots[$date] = $slots;
+        }
+    }
+
+    public function handleSlot($date, $slotIndex)
+    {
+        $slots = $this->shiftSlots[$date] ?? [];
+        if (empty($slots)) {
+            foreach ($this->availableTimes as $key => $time) {
+                $slots[$key] = 0;
+            }
+        }
+        $slots[$slotIndex] = empty($slots[$slotIndex]) ? 1 : 0;
+        $this->shiftSlots[$date] = $slots;
+    }
+
+    public function reGenerateSlots(): array
+    {
+        $shiftSlots = [];
+        foreach ($this->availableDates as $date) {
+            $slots = $this->shiftSlots[$date] ?? [];
+            if (empty($slots)) {
+                foreach ($this->availableTimes as $key => $time) {
+                    $slots[$key] = 0;
+                }
+            } else {
+                foreach ($this->availableTimes as $key => $time) {
+                    $slots[$key] = !empty($slots[$key]) ? $slots[$key] : 0;
+                }
+            }
+            $shiftSlots[$date] = $slots;
+        }
+
+        return $shiftSlots;
     }
 }

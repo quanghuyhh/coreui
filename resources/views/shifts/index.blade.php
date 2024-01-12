@@ -18,11 +18,17 @@
                 <tbody>
                 @foreach($shifts as $shift)
                     <tr>
-                        <th scope="row">{{ $shift->month }}</th>
-                        <td>{{ $shift->status }}</td>
+                        <th scope="row">{{ $shift->month->format('Y-m') }}</th>
+                        <td>
+                            @if($shift->status === \App\Enums\ShiftStatusEnum::IN_PROGRESS->value)
+                                <span class="badge bg-success">作成中</span>
+                            @else
+                                <span class="badge bg-primary">公開済み</span>
+                            @endif
+                        </td>
                         <td>
                             <a class="btn btn-primary btn-sm mx-1" role="button" href="/admin/shift/edit-shift.html">シフト編集</a>
-                            <a class="btn btn-primary btn-sm mx-1" role="button" href="/admin/shift/edit-time.html">時間枠編集</a>
+                            <a class="btn btn-primary btn-sm mx-1" role="button" href="{{ route('admin.shifts.edit', ['shift' => $shift->id]) }}">時間枠編集</a>
                             <a class="btn btn-primary btn-sm mx-1" role="button" href="/admin/shift/view-shift.html">表示</a>
                         </td>
                     </tr>

@@ -2,7 +2,7 @@
     <div class="row mb-2">
         <div class="col text-start col-4">
             <input class="form-control" type="month" wire:model="month"/>
-            @error('month') {{ $message }}@enderror
+            @error('month') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
         <div class="col text-start">
             <div></div>
@@ -46,9 +46,18 @@
                             </svg>
                         </button>
                     </td>
-                    <td class="text-center"><input type="checkbox" id="s-row-1" class="s-row check-all"></td>
-                    @foreach($availableTimes as $time)
-                        <td class="text-center"><input type="checkbox" class="s-col-1 s-row-1"></td>
+                    <td class="text-center">
+                        <input type="checkbox" id="s-row-1" class="s-row check-all" wire:click="checkAllDate('{{ $date }}', $event.target.checked)">
+                    </td>
+                    @foreach($availableTimes as $index => $time)
+                        <td class="text-center">
+                            <input
+                                type="checkbox"
+                                class="s-col-1 s-row-1"
+                                wire:click="handleSlot('{{ $date }}', '{{ $index }}')"
+                               @if(!empty($shiftSlots[$date][$index])) checked="true" @endif
+                            >
+                        </td>
                     @endforeach
                     <td class="text-center"></td>
                 </tr>

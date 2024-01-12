@@ -16,7 +16,6 @@ return new class extends Migration
             $table->bigInteger('shift_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
             $table->tinyInteger('status')->comment('1: in-progress, 2: published');
-            $table->text('date')->nullable();
             $table->json('data');
             $table->timestamps();
         });

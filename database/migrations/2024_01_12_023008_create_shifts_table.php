@@ -16,7 +16,6 @@ return new class extends Migration
             $table->bigInteger('school_id')->nullable();
             $table->tinyInteger('status')->default(1)->comment('1: in-progress, 2: published');
             $table->date('month')->nullable();
-            $table->text('date')->nullable();
             $table->json('data')->nullable();
             $table->timestamps();
         });

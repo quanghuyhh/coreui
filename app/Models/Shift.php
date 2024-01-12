@@ -13,11 +13,11 @@ class Shift extends Model
         'school_id',
         'status',
         'month',
-        'date',
         'data',
     ];
 
     protected $casts = [
+        'month' => 'date',
         'data' => 'json',
     ];
 }
