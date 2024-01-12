@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\TeacherController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +57,7 @@ Route::group(['middleware' => 'web'], function() {
         Route::get('/', [AdminController::class, 'index'])->name('dashboard');
         Route::view('/schools', 'school.index')->name('schools.index');
         Route::view('/roles', 'role.index')->name('roles.index');
+        Route::resource('/shifts', ShiftController::class);
     });
 
     Route::group(['prefix' => 'teacher', 'as' => 'teacher.', 'middleware' => 'role:teacher'], function () {

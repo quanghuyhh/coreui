@@ -17,6 +17,13 @@
         </li>
         @if($isManager)
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.shifts.index') }}" wire:navigate>
+                    <svg class="nav-icon">
+                        <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-calendar') }}"></use>
+                    </svg> シフト管理
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.roles.index') }}" wire:navigate>
                     <svg class="nav-icon">
                         <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-drop') }}"></use>
