@@ -16,6 +16,7 @@ class ShiftController extends Controller
 
     public function create()
     {
+        session()->flash('success','Success alert');
         return view('shifts.create');
     }
 

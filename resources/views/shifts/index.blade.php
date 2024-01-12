@@ -12,7 +12,9 @@
                 <tr>
                     <th scope="col">年月</th>
                     <th scope="col">ステータス</th>
-                    <th scope="col">_</th>
+                    <th scope="col" style="text-align: end">
+                        _
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -26,7 +28,7 @@
                                 <span class="badge bg-primary">公開済み</span>
                             @endif
                         </td>
-                        <td>
+                        <td class="text-end">
                             <a class="btn btn-primary btn-sm mx-1" role="button" href="/admin/shift/edit-shift.html">シフト編集</a>
                             <a class="btn btn-primary btn-sm mx-1" role="button" href="{{ route('admin.shifts.edit', ['shift' => $shift->id]) }}">時間枠編集</a>
                             <a class="btn btn-primary btn-sm mx-1" role="button" href="/admin/shift/view-shift.html">表示</a>

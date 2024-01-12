@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\Shifts;
 
+use App\Enums\RoleEnum;
 use App\Models\Shift;
 use Carbon\Carbon;
 use Livewire\Component;
@@ -20,20 +21,11 @@ class CreateForm extends Component
 
     public $shiftSlots = [];
 
+    public array $checkedAllDays = [];
+    public array $checkedAllTimes = [];
+
     public function mount()
     {
-        $this->month = Carbon::now()->format('Y-m');
-        $this->availableDates[] = Carbon::now()->format('Y-m-d');
-
-        $start = Carbon::now()->startOfHour()->format('H:m');
-        $end = Carbon::now()->startOfHour()->addHours(2)->format('H:m');
-        $key = sprintf("%s-%s", $start, $end);
-        $this->availableTimes = [
-            $key => [
-                'start' => $start,
-                'end' => $end,
-            ]
-        ];
     }
 
     public function render()
@@ -67,6 +59,12 @@ class CreateForm extends Component
 
     public function saveShift()
     {
+        $managerRole = auth()->user()->roles()->firstWhere('role', RoleEnum::MANAGER->value);
+        if (empty($managerRole)) {
+            $this->addError('month', "You don't have permission.");
+            return;
+        }
+
         $currentMonth = Carbon::createFromFormat('Y-m', $this->month)->format('Y-m-d');
         if (Shift::firstWhere('month',$currentMonth)) {
             $this->addError('month', 'Current month existed');
@@ -96,6 +94,8 @@ class CreateForm extends Component
             'shift-slots' => $shiftSlots,
             'teachers' => []
         ];
+        $shift->school_id = $managerRole->school_id;
+
         $shift->save();
         return redirect()->route('admin.shifts.index');
     }

@@ -1,4 +1,5 @@
 <div class="card-body">
+    @livewire('admin.common.alert')
     <div class="row mb-2">
         <div class="col text-start col-4">
             <input class="form-control" type="month" wire:model="month"/>
@@ -25,7 +26,7 @@
                         <div><input type="checkbox" id="s-col-1"></div>
                     </th>
                 @endforeach
-                <th class="text-center">
+                <th class="text-end">
                     <button class="btn btn-primary btn-sm" type="button" data-coreui-toggle="modal" data-coreui-target="#modal-time">
                         <svg class="icon">
                             <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-plus') }}"></use>
