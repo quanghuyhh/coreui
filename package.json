@@ -10,5 +10,9 @@
         "laravel-vite-plugin": "^1.0.0",
         "sass": "^1.69.7",
         "vite": "^5.0.0"
+    },
+    "dependencies": {
+        "@coreui/coreui": "^4.3.2",
+        "@popperjs/core": "^2.11.8"
     }
 }

@@ -32,25 +32,18 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="{{ asset('/assets/admin/assets/favicon/ms-icon-144x144.png') }}">
     <meta name="theme-color" content="#ffffff">
-    <!-- Vendors styles-->
-    <link rel="stylesheet" href="{{ asset('/assets/admin/vendors/simplebar/css/simplebar.css') }}">
-    <link rel="stylesheet" href="{{ asset('/assets/admin/css/vendors/simplebar.css') }}">
-    <!-- Main styles for this application-->
-    <link href="{{ asset('/assets/admin/css/style.css') }}" rel="stylesheet">
-    <!-- We use those styles to show code examples, you should remove them in your application.-->
-    <link href="{{ asset('/assets/admin/css/examples.') }}" rel="stylesheet">
-    <link href="{{ asset('/assets/admin/vendors/@coreui/chartjs/css/coreui-chartjs.css') }}" rel="stylesheet">
-    <link href="{{ asset('/assets/admin/vendors/@coreui/chartjs/css/coreui-chartjs.css') }}" rel="stylesheet">
 
     <!-- Vendors styles-->
     <link href="{{ asset('/assets/admin/vendors/simplebar/css/simplebar.css') }}" rel="stylesheet">
     <link href="{{ asset('/assets/admin/css/vendors/simplebar.css') }}" rel="stylesheet">
+
     <!-- Main styles for this application-->
     <link href="{{ asset('/assets/admin/css/style.css') }}" rel="stylesheet">
+
     <!-- We use those styles to show code examples, you should remove them in your application.-->
-    <link href="{{ asset('/assets/admin/css/examples.css') }}" rel="stylesheet">
-    <link href="{{ asset('/assets/admin/vendors/@coreui/chartjs/css/coreui-chartjs.css') }}" rel="stylesheet">
-    @vite(['resources/scss/style.scss'])
+{{--    <link href="{{ asset('/assets/admin/css/examples.css') }}" rel="stylesheet">--}}
+{{--    <link href="{{ asset('/assets/admin/vendors/@coreui/chartjs/css/coreui-chartjs.css') }}" rel="stylesheet">--}}
+    @vite(['resources/scss/style.scss', 'resources/js/app.js'])
     @livewireStyles
 </head>
 <body>
@@ -62,13 +55,18 @@
     </div>
     @livewire('layout.footer')
 </div>
-<script src="{{ asset('/assets/admin/vendors/@coreui/coreui/js/coreui.bundle.min.js') }}"></script>
-<script src="{{ asset('/assets/admin/vendors/simplebar/js/simplebar.min.js') }}"></script>
-<script src="{{ asset('/assets/admin/vendors/chart.js/js/chart.min.js') }}"></script>
-<script src="{{ asset('/assets/admin/vendors/@coreui/chartjs/js/coreui-chartjs.js') }}"></script>
-<script src="{{ asset('/assets/admin/vendors/@coreui/utils/js/coreui-utils.js') }}"></script>
-<script src="{{ asset('/assets/admin/js/main.js') }}"></script>
+{{--<script src="{{ asset('/assets/admin/vendors/@coreui/coreui/js/coreui.bundle.min.js') }}"></script>--}}
+{{--<script src="{{ asset('/assets/admin/vendors/simplebar/js/simplebar.min.js') }}"></script>--}}
+{{--<script src="{{ asset('/assets/admin/vendors/chart.js/js/chart.min.js') }}"></script>--}}
+{{--<script src="{{ asset('/assets/admin/vendors/@coreui/chartjs/js/coreui-chartjs.js') }}"></script>--}}
+{{--<script src="{{ asset('/assets/admin/vendors/@coreui/utils/js/coreui-utils.js') }}"></script>--}}
+{{--<script src="{{ asset('/assets/admin/js/main.js') }}"></script>--}}
 @livewireScripts
+@stack('scripts')
+
+<script type="text/javascript">
+
+</script>
 
 </body>
 </html>

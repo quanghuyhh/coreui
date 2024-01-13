@@ -16,13 +16,12 @@ class ShiftController extends Controller
 
     public function create()
     {
-        session()->flash('success','Success alert');
         return view('shifts.create');
     }
 
-    public function edit()
+    public function edit(int $shiftId)
     {
-        return view('shifts.edit');
+        return view('shifts.edit', ['id' => $shiftId]);
     }
 
 
