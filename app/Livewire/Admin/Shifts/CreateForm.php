@@ -398,7 +398,7 @@ class CreateForm extends Component
     public function saveShift()
     {
         if (empty($this->availableTimes) || empty($this->availableDates)) {
-            session()->flash('error', 'Please add at least day/time');
+            $this->addError('common', 'Please add at least day/time');
             return;
         }
 

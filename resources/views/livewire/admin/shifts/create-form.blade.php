@@ -1,5 +1,11 @@
 <div class="card-body">
     @livewire('admin.common.alert')
+    @error('common')
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ $message }}
+            <button type="button" class="btn-close" data-coreui-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @enderror
     <div class="row mb-2">
         <div class="col text-start col-4">
             <input class="form-control" type="month" wire:model="month"/>
