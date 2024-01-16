@@ -63,7 +63,6 @@ class Application extends Component
     {
         try {
             if (empty($this->selectedShift)) {
-                dd(1);
                 throw new \Exception(trans('Please select a valid shift'));
             }
 
