@@ -27,11 +27,14 @@
                             @foreach($shiftSlots as $slotTime => $status)
                                 <td class="text-center">
                                     @if($status)
-                                        <select class="form-control">
+                                        <select class="form-control" wire:model="shiftTeachers.{{$slotDay}}.{{$slotTime}}">
                                             <option value="">--- 講師選択 --</option>
-                                            <option value="">田中一郎</option>
-                                            <option value="">佐藤太郎</option>
-                                            <option value="">鈴木次郎</option>
+                                            @foreach($availableTeachers as $teacher)
+                                            <option
+                                                value="{{ $teacher['id'] }}"
+                                                @if(!empty($shiftTeachers[$slotDay][$slotTime])) selected @endif
+                                            >{{ $teacher['name'] }}</option>
+                                            @endforeach
                                         </select>
                                     @endif
                                 </td>
@@ -54,4 +57,12 @@
         </div>
     </div>
 </div>
+
+@script
+<script type="text/javascript">
+    window.addEventListener('reload', () => {
+        window.location.reload()
+    })
+</script>
+@endscript
 

@@ -12,13 +12,19 @@ class EditShiftForm extends Component
     public array $shift = [];
     public array $shiftDates = [];
 
+    public array $availableTeachers = [];
+    public array $shiftTeachers = [];
+
     public bool $isPublic = false;
 
     public function mount()
     {
-        $this->shift = Shift::find($this->shiftId)->toArray();
+        $shift = Shift::find($this->shiftId);
+        $this->shift = $shift->toArray();
         $this->shiftDates = $this->shift['data']['days'] ?? [];
         $this->isPublic = $this->shift['status'] == ShiftStatusEnum::COMPLETED->value;
+        $this->availableTeachers = $shift->appliers->toArray();
+        $this->shiftTeachers = $this->shift['data']['teachers'] ?? [];
     }
 
     public function render()
@@ -31,6 +37,7 @@ class EditShiftForm extends Component
         $shift = Shift::find($this->shiftId);
         $shiftData = $shift->data;
         $shiftData['days'] = $this->shiftDates;
+        $shiftData['teachers'] = $this->generateShiftTeachers();
         $shift->data = $shiftData;
 
         $shift->status = $this->isPublic ? ShiftStatusEnum::COMPLETED->value : ShiftStatusEnum::IN_PROGRESS->value;
@@ -38,5 +45,19 @@ class EditShiftForm extends Component
         $shift->save();
         session()->flash('Your shift updated!');
         $this->dispatch('reload');
+    }
+
+    public function generateShiftTeachers()
+    {
+        $applied = [];
+        foreach($this->shift['data']['days'] as $index => $day) {
+            $slotDay = $day['day'];
+            $shiftSlots = $this->shift['data']['shift-slots'][$slotDay] ?? [];
+            foreach($shiftSlots as $slotTime => $status) {
+                $applied[$slotDay][$slotTime] = $this->shiftTeachers[$slotDay][$slotTime] ?? null;
+            }
+        }
+
+        return $applied;
     }
 }

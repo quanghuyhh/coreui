@@ -18,7 +18,7 @@ class Application extends Component
 
     public function mount()
     {
-        $this->shifts = Shift::all()->toArray();
+        $this->shifts = Shift::published()->get()->toArray();
         if (!empty($this->shifts)) {
             $this->selectedShift = $this->shifts[0]['id'] ?? null;
         }

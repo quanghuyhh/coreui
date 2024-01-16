@@ -28,4 +28,12 @@ class Shift extends Model
         $table = $this->getTable();
         return $builder->where("$table.status", ShiftStatusEnum::COMPLETED->value);
     }
+
+    public function appliers()
+    {
+        return $this->belongsToMany(
+            User::class,
+            ShiftApplication::class,
+        );
+    }
 }

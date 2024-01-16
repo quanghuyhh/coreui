@@ -56,6 +56,14 @@ class User extends Authenticatable
         return $this->belongsToMany(School::class, UserRole::class);
     }
 
+    public function applies()
+    {
+        return $this->belongsToMany(
+            Shift::class,
+            ShiftApplication::class,
+        );
+    }
+
     public function isManager()
     {
         return app(RoleService::class)->hasPermission(
