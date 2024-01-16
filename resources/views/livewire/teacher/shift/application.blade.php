@@ -1,11 +1,4 @@
 <div class="card mb-4">
-    @livewire('admin.common.alert')
-    @error('common')
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ $message }}
-        <button type="button" class="btn-close" data-coreui-dismiss="alert" aria-label="Close"></button>
-    </div>
-    @enderror
     <div class="card-header d-flex align-items-center justify-content-between">
         <div class="col-12 col-md-4">
             <select
@@ -20,6 +13,14 @@
         <button class="btn btn-primary" type="button" wire:click.prevent="onSave">申請</button>
     </div>
     <div class="card-body">
+        @livewire('admin.common.alert')
+        @error('common')
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ $message }}
+            <button type="button" class="btn-close" data-coreui-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @enderror
+
         @if(!empty($selectedShift))
             @php
                 $shift = collect($shifts)->firstWhere('id', $selectedShift);

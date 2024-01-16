@@ -30,14 +30,17 @@
                         @endphp
                         <tr>
                             <td>
-                                <span>{{ \Carbon\Carbon::parse($day['day'])->locale('ja_JP')->format('d D') }}</span>
+                                <span>{{ \Carbon\Carbon::parse($day['day'])->format('d') }} {{ jp_day_of_week(\Carbon\Carbon::parse($day['day'])->format('w')) }}</span>
                             </td>
                             @foreach($shiftSlots as $slotTime => $status)
+                                @php
+                                    $appliedTeachers = $availableTeachers[$slotDay][$slotTime] ?? [];
+                                @endphp
                                 <td class="text-center">
                                     @if($status)
                                         <select class="form-control" wire:model="shiftTeachers.{{$slotDay}}.{{$slotTime}}">
                                             <option value="">--- 講師選択 --</option>
-                                            @foreach($availableTeachers as $teacher)
+                                            @foreach($appliedTeachers as $teacher)
                                             <option
                                                 value="{{ $teacher['id'] }}"
                                                 @if(!empty($shiftTeachers[$slotDay][$slotTime])) selected @endif

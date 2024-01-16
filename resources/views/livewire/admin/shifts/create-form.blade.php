@@ -59,7 +59,7 @@
             @foreach($this->sorted_date as $date)
                 <tr wire:key="{{ $date }}">
                     <td>
-                        <span>{{ $date }}</span>
+                        <span>{{ \Carbon\Carbon::parse($date)->format('d') }} {{ jp_day_of_week(\Carbon\Carbon::parse($date)->format('w')) }}</span>
                         <button class="btn btn-sm mx-1"
                                 type="button"
                                 wire:click.prevent="openEditDate('{{ $date }}')"

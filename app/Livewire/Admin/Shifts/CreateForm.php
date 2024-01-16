@@ -458,7 +458,8 @@ class CreateForm extends Component
         $shift->school_id = $managerRole->school_id;
 
         $shift->save();
-        return redirect()->route('admin.shifts.index');
+        return redirect()->route('admin.shifts.index')
+            ->with('success', trans('Shift successfully created!.'));
     }
 
     public function updateShift()
@@ -507,6 +508,7 @@ class CreateForm extends Component
         $shift->school_id = $managerRole->school_id;
 
         $shift->save();
-        return redirect()->route('admin.shifts.index');
+        return redirect()->route('admin.shifts.index')
+            ->with('success', trans('Shift successfully updated!.'));
     }
 }

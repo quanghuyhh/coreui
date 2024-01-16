@@ -7,6 +7,9 @@
             <a href="{{ route('admin.shifts.create') }}" class="btn btn-primary">新規作成</a>
         </div>
         <div class="card-body">
+
+            @livewire('admin.common.alert')
+
             <table class="table">
                 <thead>
                 <tr>

@@ -43,8 +43,8 @@ class EditShiftForm extends Component
         $shift->status = $this->isPublic ? ShiftStatusEnum::COMPLETED->value : ShiftStatusEnum::IN_PROGRESS->value;
 
         $shift->save();
-        session()->flash('Your shift updated!');
-        $this->dispatch('reload');
+        return redirect()->route('admin.shifts.index')
+            ->with('success', trans('The shift has been successfully updated.'));
     }
 
     public function generateShiftTeachers()
@@ -63,20 +63,32 @@ class EditShiftForm extends Component
 
     public function getAppliedTeachers(array $teachers)
     {
-        return collect($teachers)->filter(function ($teacher) {
-           $pivot = $teacher['pivot']['data'] ?? null;
-           if (empty($pivot)) {
-               return false;
-           }
+        $availableTeachers = [];
+        foreach ($teachers as $teacher) {
+            $pivot = $teacher['pivot']['data'] ?? null;
+            if (empty($pivot)) {
+                continue;
+            }
 
-           $data = json_decode($pivot, true);
-           $slots = $data['available-work-slots'] ?? [];
-           if (empty($slots)) {
-               return false;
-           }
-           return collect($slots)->filter(function ($slot) {
-               return collect($slot)->filter(fn($apply) => !empty($apply))->count();
-           })->count() > 0;
-        })->all();
+            $data = json_decode($pivot, true);
+            $appliedSlots = $data['available-work-slots'] ?? [];
+            if (empty($appliedSlots)) {
+                continue;
+            }
+
+            foreach ($appliedSlots as $dateSlot => $slots) {
+                foreach ($slots as $timeSlot => $status) {
+                    if (empty($status)) {
+                        continue;
+                    }
+                    $availableTeachers[$dateSlot][$timeSlot] = array_merge(
+                        $availableTeachers[$dateSlot][$timeSlot] ?? [],
+                        [$teacher]
+                    );
+                }
+            }
+        }
+
+        return $availableTeachers;
     }
 }

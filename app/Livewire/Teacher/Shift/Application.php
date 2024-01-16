@@ -20,7 +20,7 @@ class Application extends Component
     {
         $this->shifts = Shift::published()->get()->toArray();
         if (!empty($this->shifts)) {
-            $this->selectedShift = $this->shifts[0]['id'] ?? null;
+            $this->selectedShift = request()->get('shift_id') ?? $this->shifts[0]['id'] ?? null;
         }
 
         $this->fetchAppliedShift();
@@ -36,6 +36,7 @@ class Application extends Component
         $this->selectedShift = $month;
         $this->applied = [];
         $this->dispatch('uncheck');
+        $this->fetchAppliedShift();
     }
 
     public function onCheckboxChecked($date, $time, $checked)
@@ -66,7 +67,7 @@ class Application extends Component
                 throw new \Exception(trans('Please select a valid shift'));
             }
 
-            $shiftApply = ShiftApplication::firstWhere('user_id', auth()->id());
+            $shiftApply = $this->getCurrentShift();
             if (empty($shiftApply)) {
                 $shiftApply = new ShiftApplication();
             }
@@ -78,8 +79,9 @@ class Application extends Component
                 ]
             ])->save();
 
-            session()->flash('success', trans('Your shift application updated!'));
-            $this->dispatch('reload');
+//            session()->flash('success', trans('Your shift application updated!'));
+//            $this->dispatch('reload');
+            return redirect()->route('teacher.shift.application', ['shift_id' => $this->selectedShift])->with('success', trans('Your shift application updated!'));
         } catch (\Exception $exception) {
             $this->addError('common', $exception->getMessage());
         }
@@ -87,7 +89,7 @@ class Application extends Component
 
     public function fetchAppliedShift()
     {
-        $appliedShift = ShiftApplication::firstWhere('user_id', auth()->user()->id);
+        $appliedShift = $this->getCurrentShift();
         if (empty($appliedShift)) {
             return;
         }
@@ -95,5 +97,12 @@ class Application extends Component
         $this->selectedShift = $appliedShift->shift_id;
         $this->appliedShift = $appliedShift->toArray();
         $this->applied = $appliedShift->data['available-work-slots'] ?? [];
+    }
+
+    public function getCurrentShift()
+    {
+        return ShiftApplication::where('user_id', auth()->user()->id)
+            ->where('shift_id', $this->selectedShift)
+            ->first();
     }
 }
