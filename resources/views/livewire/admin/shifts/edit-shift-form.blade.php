@@ -1,0 +1,57 @@
+<div class="card mb-4">
+    <div class="card-header d-flex align-items-center justify-content-between">
+        <strong>シフト作成 ({{ \Carbon\Carbon::parse($shift['month'])->format('Y年m月') }})</strong>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th></th>
+                    @foreach($shift['data']['times'] as $time)
+                    <th class="text-center"><span>{{ $time['start'] }}〜{{ $time['end'] }}</span></th>
+                    @endforeach
+                    <th class="text-center"><span>メモ</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                    @foreach($shift['data']['days'] as $index => $day)
+                        @php
+                            $slotDay = $day['day'];
+                            $shiftSlots = $shift['data']['shift-slots'][$slotDay] ?? [];
+                        @endphp
+                        <tr>
+                            <td>
+                                <span>{{ \Carbon\Carbon::parse($day['day'])->locale('ja_JP')->format('d D') }}</span>
+                            </td>
+                            @foreach($shiftSlots as $slotTime => $status)
+                                <td class="text-center">
+                                    @if($status)
+                                        <select class="form-control">
+                                            <option value="">--- 講師選択 --</option>
+                                            <option value="">田中一郎</option>
+                                            <option value="">佐藤太郎</option>
+                                            <option value="">鈴木次郎</option>
+                                        </select>
+                                    @endif
+                                </td>
+                            @endforeach
+                            <td class="text-center"><input type="text" class="form-control" wire:model="shiftDates.{{$index}}.note"></td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card-footer">
+        <div class="text-right d-flex justify-content-end">
+            <div class="form-check form-switch form-check-inline text-start">
+                <input class="form-check-input" type="checkbox" id="formCheck-1" wire:model="isPublic">
+                <label class="form-check-label" for="formCheck-1">公開する</label>
+            </div>
+            <a class="btn btn-primary btn-sm" role="button" wire:click.prevent="onSave">保存する</a>
+        </div>
+    </div>
+</div>
+

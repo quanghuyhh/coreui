@@ -29,4 +29,14 @@ class ShiftController extends Controller
     {
         return view('shifts.show');
     }
+
+    public function editShift(int $shiftId)
+    {
+        try {
+            $shift = Shift::findOrFail($shiftId);
+            return view('shifts.edit-shift', ['id' => $shiftId, 'shift' => $shift]);
+        } catch (\Exception $exception) {
+            return redirect('/');
+        }
+    }
 }

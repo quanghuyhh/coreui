@@ -57,6 +57,9 @@ Route::group(['middleware' => 'web'], function() {
         Route::get('/', [AdminController::class, 'index'])->name('dashboard');
         Route::view('/schools', 'school.index')->name('schools.index');
         Route::view('/roles', 'role.index')->name('roles.index');
+        Route::group(['prefix' => 'shifts', 'as' => 'shifts.'], function () {
+            Route::get('/{id}/edit-shift', [ShiftController::class, 'editShift'])->name('editShift');
+        });
         Route::resource('/shifts', ShiftController::class);
     });
 
