@@ -39,10 +39,10 @@
             </li>
         @else
             <li class="nav-item">
-                <a class="nav-link" href="" wire:navigate>
+                <a class="nav-link" href="{{ route('teacher.shift.application') }}" wire:navigate>
                     <svg class="nav-icon">
-                        <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-drop') }}"></use>
-                    </svg> Teacher Menu
+                        <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-calendar') }}"></use>
+                    </svg> シフト申請
                 </a>
             </li>
         @endif

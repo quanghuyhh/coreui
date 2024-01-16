@@ -45,7 +45,7 @@ class Login extends Component
             ]);
         }
 
-        return redirect()->intended(
+        return redirect()->route(
             auth()->user()->isManager()
                 ? config('role.manager')
                 : config('role.teacher')

@@ -43,7 +43,10 @@
                     </th>
                 @endforeach
                 <th class="text-end">
-                    <button class="btn btn-primary btn-sm" type="button" wire:click.prevent="showModal('#modal-add-time')">
+                    <button class="btn btn-primary btn-sm"
+                            type="button"
+                            wire:click.prevent="showModal('#modal-add-time')"
+                    >
                         <svg class="icon">
                             <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-plus') }}"></use>
                         </svg>
@@ -57,7 +60,10 @@
                 <tr wire:key="{{ $date }}">
                     <td>
                         <span>{{ $date }}</span>
-                        <button class="btn btn-sm mx-1" type="button" wire:click.prevent="openEditDate('{{ $date }}')">
+                        <button class="btn btn-sm mx-1"
+                                type="button"
+                                wire:click.prevent="openEditDate('{{ $date }}')"
+                        >
                             <svg class="icon">
                                 <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-pencil') }}"></use>
                             </svg>
@@ -96,7 +102,10 @@
     </div>
     <div class="row pb-3">
         <div class="col text-start">
-            <button class="btn btn-primary btn-sm" type="button" wire:click.prevent="showModal('#modal-add-date')">
+            <button class="btn btn-primary btn-sm"
+                    type="button"
+                    wire:click.prevent="showModal('#modal-add-date')"
+            >
                 <svg class="icon">
                     <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-plus') }}"></use>
                 </svg>
@@ -107,9 +116,15 @@
 
     <div class="card-footer bg-transparent pt-3 d-flex align-items-center justify-content-end">
         @if(empty($shiftId))
-            <button type="button" class="btn btn-primary btn-sm" role="button" wire:click="saveShift">保存する</button>
+            <button type="button" class="btn btn-primary btn-sm"
+                    role="button"
+                    wire:click="saveShift"
+            >保存する</button>
         @else
-            <button type="button" class="btn btn-primary btn-sm" role="button" wire:click="updateShift">保存する</button>
+            <button type="button" class="btn btn-primary btn-sm"
+                    role="button"
+                    wire:click="updateShift"
+            >保存する</button>
         @endif
     </div>
 

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\ShiftStatusEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,4 +22,10 @@ class Shift extends Model
         'month' => 'date',
         'data' => 'json',
     ];
+
+    public function scopePublished(Builder $builder)
+    {
+        $table = $this->getTable();
+        return $builder->where("$table.status", ShiftStatusEnum::COMPLETED->value);
+    }
 }

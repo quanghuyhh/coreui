@@ -6,6 +6,7 @@ use App\Enums\RoleEnum;
 use App\Models\Shift;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
@@ -79,10 +80,21 @@ class CreateForm extends Component
     public function onAddDate()
     {
         try {
+            if (empty($this->month)) {
+                $this->addError('month', trans('validation.required', ['attribute' => 'month']));
+                $this->hideModal();
+                return;
+            }
+
             throw_if(
                 !empty($this->availableDates[$this->dateToAdd]),
                 new \Exception('重複した日付があります')
             );
+            $currentDate = Carbon::parse($this->dateToAdd);
+            $currentMonth = Carbon::parse($this->month)->startOfMonth();
+            if ($currentMonth->format('Y-m') !== $currentDate->format('Y-m')) {
+                throw new \Exception(trans('Please select valid date!'));
+            }
 
             $this->availableDates[$this->dateToAdd] = $this->dateToAdd;
             foreach ($this->checkedAllTimes as $timeChecked => $status) {
@@ -374,8 +386,8 @@ class CreateForm extends Component
             if ($key === $ignoreTimeRange && !empty($ignoreTimeRange)) {
                 return false;
             }
-            $_startTime = Carbon::parse($timeRange['start']);
-            $_endTime = Carbon::parse($timeRange['end']);
+            $_startTime = Carbon::parse($timeRange['start'])->startOfDay();
+            $_endTime = Carbon::parse($timeRange['end'])->startOfDay();
             return Carbon::parse($sortedTimestamp[0])->between($_startTime, $_endTime, false) ||
                 Carbon::parse($sortedTimestamp[1])->between($_startTime, $_endTime, false) ||
                 $_startTime->between(Carbon::parse($sortedTimestamp[0]), Carbon::parse($sortedTimestamp[1]), false) ||
@@ -397,6 +409,12 @@ class CreateForm extends Component
 
     public function saveShift()
     {
+        $this->validateOnly('month', [
+            'month' => [
+                'required'
+            ]
+        ]);
+
         if (empty($this->availableTimes) || empty($this->availableDates)) {
             $this->addError('common', 'Please add at least day/time');
             return;
@@ -415,7 +433,7 @@ class CreateForm extends Component
         }
 
         $shift = new Shift();
-        $shift->month = Carbon::createFromFormat('Y-m', $this->month);
+        $shift->month = Carbon::createFromFormat('Y-m', $this->month)->startOfMonth();
         $times = [];
         foreach ($this->availableTimes as $duration) {
             $times[] = $duration;

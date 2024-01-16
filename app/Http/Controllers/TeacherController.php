@@ -8,4 +8,9 @@ class TeacherController extends Controller
     {
         return view('teacher');
     }
+
+    public function application()
+    {
+        return view('shift.application');
+    }
 }

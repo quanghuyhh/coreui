@@ -62,6 +62,9 @@ Route::group(['middleware' => 'web'], function() {
 
     Route::group(['prefix' => 'teacher', 'as' => 'teacher.', 'middleware' => 'role:teacher'], function () {
         Route::get('/', [TeacherController::class, 'index'])->name('dashboard');
+        Route::group(['prefix' => 'shift', 'as' => 'shift.'], function () {
+           Route::get('/shift-application', [TeacherController::class, 'application'])->name('application');
+        });
     });
 });
 
