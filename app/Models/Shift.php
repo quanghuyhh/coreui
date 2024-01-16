@@ -34,6 +34,6 @@ class Shift extends Model
         return $this->belongsToMany(
             User::class,
             ShiftApplication::class,
-        );
+        )->withPivot(['id', 'user_id', 'shift_id', 'data']);
     }
 }

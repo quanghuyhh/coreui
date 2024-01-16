@@ -3,6 +3,14 @@
         <strong>シフト作成 ({{ \Carbon\Carbon::parse($shift['month'])->format('Y年m月') }})</strong>
     </div>
     <div class="card-body">
+        @livewire('admin.common.alert')
+        @error('common')
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ $message }}
+            <button type="button" class="btn-close" data-coreui-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @enderror
+
         <div class="table-responsive">
             <table class="table">
                 <thead>

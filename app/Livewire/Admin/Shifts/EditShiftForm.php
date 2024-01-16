@@ -23,7 +23,7 @@ class EditShiftForm extends Component
         $this->shift = $shift->toArray();
         $this->shiftDates = $this->shift['data']['days'] ?? [];
         $this->isPublic = $this->shift['status'] == ShiftStatusEnum::COMPLETED->value;
-        $this->availableTeachers = $shift->appliers->toArray();
+        $this->availableTeachers = $this->getAppliedTeachers($shift->appliers->toArray());
         $this->shiftTeachers = $this->shift['data']['teachers'] ?? [];
     }
 
@@ -59,5 +59,24 @@ class EditShiftForm extends Component
         }
 
         return $applied;
+    }
+
+    public function getAppliedTeachers(array $teachers)
+    {
+        return collect($teachers)->filter(function ($teacher) {
+           $pivot = $teacher['pivot']['data'] ?? null;
+           if (empty($pivot)) {
+               return false;
+           }
+
+           $data = json_decode($pivot, true);
+           $slots = $data['available-work-slots'] ?? [];
+           if (empty($slots)) {
+               return false;
+           }
+           return collect($slots)->filter(function ($slot) {
+               return collect($slot)->filter(fn($apply) => !empty($apply))->count();
+           })->count() > 0;
+        })->all();
     }
 }

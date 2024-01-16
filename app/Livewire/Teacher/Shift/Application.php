@@ -79,6 +79,7 @@ class Application extends Component
             ])->save();
 
             session()->flash('success', trans('Your shift application updated!'));
+            $this->dispatch('reload');
         } catch (\Exception $exception) {
             $this->addError('common', $exception->getMessage());
         }

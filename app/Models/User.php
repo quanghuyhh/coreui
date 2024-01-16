@@ -61,7 +61,7 @@ class User extends Authenticatable
         return $this->belongsToMany(
             Shift::class,
             ShiftApplication::class,
-        );
+        )->withPivot(['id', 'user_id', 'shift_id', 'data']);
     }
 
     public function isManager()
