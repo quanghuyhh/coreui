@@ -60,12 +60,24 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb my-0 ms-2">
                 <li class="breadcrumb-item">
+                    <a href="/" style="color: rgba(44, 56, 74, 0.95); text-decoration: none">
+                        <svg class="icon me-2">
+                            <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-home') }}"></use>
+                        </svg>
+                    </a>
                     <!-- if breadcrumb is single-->
-                    <span>Home</span>
                 </li>
-                <li class="breadcrumb-item active">
-                    <span>Dashboard</span>
-                </li>
+                @if(!empty($breadcrumbs))
+                    @foreach($breadcrumbs as $breadcrumb)
+                        <li class="breadcrumb-item @if($loop->last) active @endif">
+                            @if($loop->last)
+                            <span>{{ $breadcrumb['name'] }}</span>
+                            @else
+                                <a href="{{ $breadcrumb['url'] ?? '#' }}" style="color: rgba(44, 56, 74, 0.95); text-decoration: none">{{ $breadcrumb['name'] }}</a>
+                            @endif
+                        </li>
+                    @endforeach
+                @endif
             </ol>
         </nav>
     </div>

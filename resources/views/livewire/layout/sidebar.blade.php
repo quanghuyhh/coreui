@@ -39,6 +39,13 @@
             </li>
         @else
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('teacher.time.create') }}" wire:navigate>
+                    <svg class="nav-icon">
+                        <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-pencil') }}"></use>
+                    </svg> 勤怠申請
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('teacher.shift.application') }}" wire:navigate>
                     <svg class="nav-icon">
                         <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-calendar') }}"></use>

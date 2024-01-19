@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\TeacherTimeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -67,6 +68,11 @@ Route::group(['middleware' => 'web'], function() {
         Route::get('/', [TeacherController::class, 'index'])->name('dashboard');
         Route::group(['prefix' => 'shift', 'as' => 'shift.'], function () {
            Route::get('/shift-application', [TeacherController::class, 'application'])->name('application');
+        });
+
+        Route::group(['prefix' => 'time', 'as' => 'time.'], function () {
+            Route::get('/time-re-application', [TeacherTimeController::class, 'create'])->name('create');
+            Route::get('/time-application', [TeacherTimeController::class, 'edit'])->name('edit');
         });
     });
 });

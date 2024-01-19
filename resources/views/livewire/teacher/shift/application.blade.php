@@ -67,5 +67,8 @@
     window.addEventListener('reload', () => {
         location.reload()
     })
+    window.addEventListener('uncheck',() => {
+        document.querySelector('.alert').remove();
+    })
 </script>
 @endscript

@@ -49,7 +49,7 @@
 <body>
 @livewire('layout.sidebar')
 <div class="wrapper d-flex flex-column min-vh-100 bg-light">
-    @livewire('layout.header')
+    @livewire('layout.header',['breadcrumbs' => $breadcrumbs ?? []])
     <div class="body flex-grow-1 px-3">
         @yield('main')
     </div>

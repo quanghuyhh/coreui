@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Teacher\Shift;
 
+use App\Enums\ShiftStatusEnum;
 use App\Models\Shift;
 use App\Models\ShiftApplication;
 use Livewire\Component;
@@ -33,6 +34,7 @@ class Application extends Component
 
     public function onChangeMonth($month = null)
     {
+        $this->clearValidation();
         $this->selectedShift = $month;
         $this->applied = [];
         $this->dispatch('uncheck');
@@ -74,6 +76,7 @@ class Application extends Component
             $shiftApply->fill([
                 'shift_id' => $this->selectedShift,
                 'user_id' => auth()->user()->id,
+                'status' => $shiftApply->status ?? ShiftStatusEnum::COMPLETED->value,
                 'data' => [
                     'available-work-slots' => $this->applied
                 ]

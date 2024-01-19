@@ -11,6 +11,10 @@ class TeacherController extends Controller
 
     public function application()
     {
-        return view('shift.application');
+        return view('shift.application', [
+            'breadcrumbs' => [
+                ['name' => 'シフト申請'],
+            ]
+        ]);
     }
 }
