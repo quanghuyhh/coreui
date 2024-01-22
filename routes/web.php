@@ -71,8 +71,8 @@ Route::group(['middleware' => 'web'], function() {
         });
 
         Route::group(['prefix' => 'time', 'as' => 'time.'], function () {
-            Route::get('/time-re-application', [TeacherTimeController::class, 'create'])->name('create');
-            Route::get('/time-application', [TeacherTimeController::class, 'edit'])->name('edit');
+            Route::get('/time-application', [TeacherTimeController::class, 'create'])->name('create');
+            Route::get('/time-re-application', [TeacherTimeController::class, 'edit'])->name('edit');
         });
     });
 });

@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Services\RoleService;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
 
 class RoleGate
@@ -20,8 +21,12 @@ class RoleGate
      */
     public function handle(Request $request, Closure $next, $role): Response
     {
+        if (!auth()->check() && !in_array(Route::currentRouteName(), ['home', 'login'])) {
+            return redirect()->route('login');
+        }
+
         if (!$this->roleService->hasPermission($role)) {
-            abort(404);
+            abort(403);
         }
 
         return $next($request);

@@ -1,6 +1,4 @@
 <div class="container-fluid text-nowrap text-start">
-    @dump($errors->all());
-
     @livewire('admin.common.alert')
     @error('common')
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -9,9 +7,14 @@
     </div>
     @enderror
 
+    @if(!empty($needFixs))
     <div class="alert alert-danger" role="alert">
-        <a class="alert-link" href="/teacher/time/time-re-application.html">2023年12月1日の勤怠の修正依頼があります</a>
+        @foreach($needFixs as $needFixDate)
+            <a class="alert-link" href="{{ route('teacher.time.edit', ['date' => $needFixDate]) }}">{{ \Carbon\Carbon::parse($needFixDate)->format('Y年m月d') }}日の勤怠の修正依頼があります</a>
+            <br>
+        @endforeach
     </div>
+    @endif
     <div class="card mb-2">
         <div class="card-body">
                 <div class="text-start mb-3">
