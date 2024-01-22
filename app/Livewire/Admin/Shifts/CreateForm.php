@@ -5,15 +5,13 @@ namespace App\Livewire\Admin\Shifts;
 use App\Enums\RoleEnum;
 use App\Models\Shift;
 use Carbon\Carbon;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class CreateForm extends Component
 {
     public ?int $shiftId = null;
+
     public array $shift = [];
 
     public $month;
@@ -26,22 +24,28 @@ class CreateForm extends Component
     public $dateToAdd;
 
     public $dateToEdit;
+
     public $dateToUpdate;
+
     public $timeStartToAdd;
+
     public $timeEndToAdd;
 
     public $timeToEdit = '';
+
     public $timeStartToUpdate;
+
     public $timeEndToUpdate;
 
     public $shiftSlots = [];
 
     public array $checkedAllDays = [];
+
     public array $checkedAllTimes = [];
 
     public function mount()
     {
-        if (!empty($this->shiftId)) {
+        if (! empty($this->shiftId)) {
             $this->fetchShift();
         }
     }
@@ -58,17 +62,18 @@ class CreateForm extends Component
 
         $this->month = $shift->month->format('Y-m');
         $this->availableDates = collect(array_keys($shift->data['shift-slots']))
-            ->mapWithKeys(fn($date) => [$date => $date])
+            ->mapWithKeys(fn ($date) => [$date => $date])
             ->all();
         $this->availableTimes = collect($shift->data['times'])->mapWithKeys(function ($range) {
-            $key = sprintf("%s-%s", $range['start'], $range['end']);
+            $key = sprintf('%s-%s', $range['start'], $range['end']);
+
             return [$key => $range];
         })->all();
         $this->shiftSlots = $shift->data['shift-slots'];
 
         // check all row
         foreach ($this->shiftSlots as $date => $slots) {
-            if (collect($slots)->filter(fn($checked) => !empty($checked))->count() !== count($slots)) {
+            if (collect($slots)->filter(fn ($checked) => ! empty($checked))->count() !== count($slots)) {
                 continue;
             }
 
@@ -83,11 +88,12 @@ class CreateForm extends Component
             if (empty($this->month)) {
                 $this->addError('month', trans('validation.required', ['attribute' => 'month']));
                 $this->hideModal();
+
                 return;
             }
 
             throw_if(
-                !empty($this->availableDates[$this->dateToAdd]),
+                ! empty($this->availableDates[$this->dateToAdd]),
                 new \Exception('重複した日付があります')
             );
             $currentDate = Carbon::parse($this->dateToAdd);
@@ -114,7 +120,7 @@ class CreateForm extends Component
     {
         try {
             $sortedTime = $this->sortTimeRange($this->timeStartToAdd, $this->timeEndToAdd);
-            $timeRange = sprintf("%s-%s", $sortedTime[0], $sortedTime[1]);
+            $timeRange = sprintf('%s-%s', $sortedTime[0], $sortedTime[1]);
             $validated = Validator::make(
                 ['timeStartToAdd' => $sortedTime[0], 'timeEndToAdd' => $sortedTime[1]],
                 ['timeStartToAdd' => 'required', 'timeEndToAdd' => 'required'],
@@ -123,6 +129,7 @@ class CreateForm extends Component
             if ($validated->fails()) {
                 $this->setErrorBag($validated->getMessageBag());
                 $this->showModal('#modal-add-time');
+
                 return;
             }
 
@@ -161,7 +168,7 @@ class CreateForm extends Component
     {
         try {
             $sortedTime = $this->sortTimeRange($this->timeStartToUpdate, $this->timeEndToUpdate);
-            $timeRange = sprintf("%s-%s", $sortedTime[0], $sortedTime[1]);
+            $timeRange = sprintf('%s-%s', $sortedTime[0], $sortedTime[1]);
             $validated = Validator::make(
                 ['timeStartToUpdate' => $sortedTime[0], 'timeEndToUpdate' => $sortedTime[1]],
                 ['timeStartToUpdate' => 'required', 'timeEndToUpdate' => 'required'],
@@ -170,6 +177,7 @@ class CreateForm extends Component
             if ($validated->fails()) {
                 $this->setErrorBag($validated->getMessageBag());
                 $this->showModal('#modal-update-time');
+
                 return;
             }
 
@@ -217,7 +225,7 @@ class CreateForm extends Component
     {
         try {
             throw_if(
-                !empty($this->availableDates[$this->dateToUpdate]),
+                ! empty($this->availableDates[$this->dateToUpdate]),
                 new \Exception('重複した日付があります')
             );
 
@@ -241,7 +249,7 @@ class CreateForm extends Component
             $this->shiftSlots[$date][$timeRange] = $isChecked ? 1 : 0;
             $this->checkAllCol($timeRange);
         }
-        if (!$isChecked) {
+        if (! $isChecked) {
             unset($this->checkedAllDays[$date]);
         } else {
             $this->checkedAllDays[$date] = true;
@@ -257,7 +265,7 @@ class CreateForm extends Component
             $this->checkAllRow($date);
         }
 
-        if (!$isChecked) {
+        if (! $isChecked) {
             unset($this->checkedAllTimes[$timeRange]);
         } else {
             $this->checkedAllTimes[$timeRange] = true;
@@ -291,7 +299,7 @@ class CreateForm extends Component
                 }
             } else {
                 foreach ($this->availableTimes as $key => $time) {
-                    $slots[$key] = !empty($slots[$key]) ? $slots[$key] : 0;
+                    $slots[$key] = ! empty($slots[$key]) ? $slots[$key] : 0;
                 }
             }
             $shiftSlots[$date] = $slots;
@@ -321,9 +329,9 @@ class CreateForm extends Component
 
             foreach ($this->availableTimes as $rangeKey => $rangeValues) {
                 $result[$date][$rangeKey] = (
-                    !empty($this->checkedAllDays[$date]) ||
-                    !empty($this->checkedAllTimes[$rangeKey]) ||
-                    !empty($this->shiftSlots[$date][$rangeKey])
+                    ! empty($this->checkedAllDays[$date]) ||
+                    ! empty($this->checkedAllTimes[$rangeKey]) ||
+                    ! empty($this->shiftSlots[$date][$rangeKey])
                 ) ? 1 : 0;
             }
         }
@@ -334,7 +342,7 @@ class CreateForm extends Component
     public function checkAllRow($rowDate)
     {
         $allRowChecked = collect($this->shiftSlots[$rowDate] ?? [])
-            ->filter(fn($checked) => !empty($checked))
+            ->filter(fn ($checked) => ! empty($checked))
             ->count();
         if ($allRowChecked === count($this->availableTimes)) {
             $this->checkedAllDays[$rowDate] = true;
@@ -348,7 +356,7 @@ class CreateForm extends Component
     public function checkAllCol($timeRange)
     {
         $allColChecked = collect($this->shiftSlots)
-            ->filter(fn($rowSlot) => !empty($rowSlot[$timeRange]))
+            ->filter(fn ($rowSlot) => ! empty($rowSlot[$timeRange]))
             ->count();
         if ($allColChecked === count($this->availableDates)) {
             $this->checkedAllTimes[$timeRange] = true;
@@ -363,8 +371,8 @@ class CreateForm extends Component
     {
         return collect($this->availableTimes)->sortBy(function ($timeRange) {
             return Carbon::createFromFormat(
-                "Y-m-d H:m:s",
-                sprintf("%s %s:00", Carbon::today()->format('Y-m-d'), $timeRange['start'])
+                'Y-m-d H:m:s',
+                sprintf('%s %s:00', Carbon::today()->format('Y-m-d'), $timeRange['start'])
             )->timestamp;
         })->values()->all();
     }
@@ -373,7 +381,7 @@ class CreateForm extends Component
     {
         return collect($this->availableDates)->sortBy(function ($date) {
             return Carbon::createFromFormat(
-                "Y-m-d",
+                'Y-m-d',
                 $date
             )->startOfDay()->timestamp;
         })->values()->all();
@@ -382,12 +390,14 @@ class CreateForm extends Component
     public function checkIsValidTime($start, $end, $ignoreTimeRange = null)
     {
         $sortedTimestamp = $this->sortTimeRange($start, $end);
+
         return collect($this->availableTimes)->filter(function ($timeRange, $key) use ($sortedTimestamp, $ignoreTimeRange) {
-            if ($key === $ignoreTimeRange && !empty($ignoreTimeRange)) {
+            if ($key === $ignoreTimeRange && ! empty($ignoreTimeRange)) {
                 return false;
             }
             $_startTime = Carbon::parse($timeRange['start'])->startOfDay();
             $_endTime = Carbon::parse($timeRange['end'])->startOfDay();
+
             return Carbon::parse($sortedTimestamp[0])->between($_startTime, $_endTime, false) ||
                 Carbon::parse($sortedTimestamp[1])->between($_startTime, $_endTime, false) ||
                 $_startTime->between(Carbon::parse($sortedTimestamp[0]), Carbon::parse($sortedTimestamp[1]), false) ||
@@ -404,6 +414,7 @@ class CreateForm extends Component
 
             return $timeA - $timeB;
         });
+
         return $result;
     }
 
@@ -411,24 +422,27 @@ class CreateForm extends Component
     {
         $this->validateOnly('month', [
             'month' => [
-                'required'
-            ]
+                'required',
+            ],
         ]);
 
         if (empty($this->availableTimes) || empty($this->availableDates)) {
             $this->addError('common', 'Please add at least day/time');
+
             return;
         }
 
         $managerRole = auth()->user()->roles()->firstWhere('role', RoleEnum::MANAGER->value);
         if (empty($managerRole)) {
             $this->addError('month', "You don't have permission.");
+
             return;
         }
 
         $currentMonth = Carbon::createFromFormat('Y-m', $this->month)->format('Y-m-d');
-        if (Shift::firstWhere('month',$currentMonth)) {
+        if (Shift::firstWhere('month', $currentMonth)) {
             $this->addError('month', 'Current month existed');
+
             return;
         }
 
@@ -443,7 +457,7 @@ class CreateForm extends Component
         foreach ($this->availableDates as $date) {
             $days[] = [
                 'day' => $date,
-                'note' => ''
+                'note' => '',
             ];
         }
 
@@ -453,11 +467,12 @@ class CreateForm extends Component
             'times' => $times,
             'days' => $days,
             'shift-slots' => $shiftSlots,
-            'teachers' => []
+            'teachers' => [],
         ];
         $shift->school_id = $managerRole->school_id;
 
         $shift->save();
+
         return redirect()->route('admin.shifts.index')
             ->with('success', trans('Shift successfully created!.'));
     }
@@ -466,19 +481,22 @@ class CreateForm extends Component
     {
         if (empty($this->availableTimes) || empty($this->availableDates)) {
             session()->flash('error', 'Please add at least day/time');
+
             return;
         }
 
         $managerRole = auth()->user()->roles()->firstWhere('role', RoleEnum::MANAGER->value);
         if (empty($managerRole)) {
             $this->addError('month', "You don't have permission.");
+
             return;
         }
 
         $currentMonth = Carbon::createFromFormat('Y-m', $this->month)->format('Y-m-d');
-        $checkMonth = Shift::query()->whereNotIn('id', [$this->shiftId])->firstWhere('month',$currentMonth);
+        $checkMonth = Shift::query()->whereNotIn('id', [$this->shiftId])->firstWhere('month', $currentMonth);
         if ($checkMonth) {
             $this->addError('month', 'Current month existed');
+
             return;
         }
 
@@ -493,7 +511,7 @@ class CreateForm extends Component
         foreach ($this->availableDates as $date) {
             $days[] = [
                 'day' => $date,
-                'note' => ''
+                'note' => '',
             ];
         }
 
@@ -503,11 +521,12 @@ class CreateForm extends Component
             'times' => $times,
             'days' => $days,
             'shift-slots' => $shiftSlots,
-            'teachers' => []
+            'teachers' => [],
         ];
         $shift->school_id = $managerRole->school_id;
 
         $shift->save();
+
         return redirect()->route('admin.shifts.index')
             ->with('success', trans('Shift successfully updated!.'));
     }

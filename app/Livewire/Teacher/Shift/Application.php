@@ -20,7 +20,7 @@ class Application extends Component
     public function mount()
     {
         $this->shifts = Shift::published()->get()->toArray();
-        if (!empty($this->shifts)) {
+        if (! empty($this->shifts)) {
             $this->selectedShift = request()->get('shift_id') ?? $this->shifts[0]['id'] ?? null;
         }
 
@@ -59,6 +59,7 @@ class Application extends Component
         foreach ($shiftSlots as $slotTime => $slotStatus) {
             $result[$slotTime] = 0;
         }
+
         return $result;
     }
 
@@ -78,12 +79,12 @@ class Application extends Component
                 'user_id' => auth()->user()->id,
                 'status' => $shiftApply->status ?? ShiftStatusEnum::COMPLETED->value,
                 'data' => [
-                    'available-work-slots' => $this->applied
-                ]
+                    'available-work-slots' => $this->applied,
+                ],
             ])->save();
 
-//            session()->flash('success', trans('Your shift application updated!'));
-//            $this->dispatch('reload');
+            //            session()->flash('success', trans('Your shift application updated!'));
+            //            $this->dispatch('reload');
             return redirect()->route('teacher.shift.application', ['shift_id' => $this->selectedShift])->with('success', trans('Your shift application updated!'));
         } catch (\Exception $exception) {
             $this->addError('common', $exception->getMessage());

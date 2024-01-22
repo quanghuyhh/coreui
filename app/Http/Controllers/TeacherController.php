@@ -14,7 +14,7 @@ class TeacherController extends Controller
         return view('shift.application', [
             'breadcrumbs' => [
                 ['name' => 'シフト申請'],
-            ]
+            ],
         ]);
     }
 }

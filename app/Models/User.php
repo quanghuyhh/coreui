@@ -67,7 +67,7 @@ class User extends Authenticatable
     public function isManager()
     {
         return app(RoleService::class)->hasPermission(
-            join('|', [
+            implode('|', [
                 Str::lower(RoleEnum::MANAGER->name),
                 Str::lower(RoleEnum::HEADQUARTER->name),
             ])

@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum RoleEnum : int
+enum RoleEnum: int
 {
     case MANAGER = 1;
 

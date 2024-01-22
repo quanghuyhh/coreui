@@ -5,54 +5,71 @@ namespace App\Livewire\Teacher\Time;
 use App\Enums\WorkTimeStatus;
 use App\Models\WorkTime;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Application extends Component
 {
-    public int $workTimeId;
+    public ?int $workTimeId;
 
     public array $workTimeForEdit = [];
 
     public ?string $date = null;
 
     public bool $use_transportation_expense = false;
+
     public int $transportation_expense_type = 0;
+
     public ?int $transportation_expense = 0;
 
     public bool $use_shift = false;
+
     public ?string $shift_start_time = null;
+
     public ?string $shift_end_time = null;
+
     public ?string $shift_break_time = null;
 
     public bool $use_off_shift = false;
+
     public $off_shift_qa_time = null;
+
     public $off_shift_training_time = null;
+
     public $off_shift_absent_time = null;
+
     public $off_shift_additional_time = null;
+
     public ?int $off_shift_break_time_type = 0;
+
     public $off_shift_blog_url = null;
+
     public $off_shift_notes = null;
 
     public $use_night_work = null;
+
     public $night_time = null;
 
     public $training_type = 0;
+
     public $training_time = null;
 
     public $note = null;
 
     public array $needFixs = [];
 
+    public ?string $currentRoute;
+
     public function mount()
     {
+        $this->workTimeId = request('id');
         $this->date = request('date');
-        if (!empty($this->date)) {
-            $this->fetchMonthData();
+        $this->currentRoute = Route::currentRouteName();
+        if (! empty($this->workTimeId) || ! empty($this->date)) {
+            $this->fetchWorkingTimeData();
         }
-
-        $this->fetchNeedFixWorkingTimes();
     }
 
     public function render()
@@ -60,15 +77,26 @@ class Application extends Component
         return view('livewire.teacher.time.application');
     }
 
-    public function fetchMonthData()
+    public function fetchWorkingTimeData()
     {
-        if (empty($this->date)) {
+        if (empty($this->workTimeId) && empty($this->date)) {
             return;
         }
 
-        $workTime = $this->getWorkingDate($this->date);
+        if (! empty($this->workTimeId)) {
+            $workTime = $this->getWorkingById($this->workTimeId);
+        } elseif (! empty($this->date)) {
+            $workTime = $this->getWorkingDate($this->date);
+        }
         if (empty($workTime)) {
             return;
+        }
+
+        $this->date = $workTime->date;
+
+        $errorMsg = $this->generateErrorWhenEdit($workTime->status, $workTime->id, $workTime->date);
+        if (! empty($errorMsg)) {
+            $this->addError('common', $errorMsg);
         }
 
         $convertedData = array_merge(
@@ -76,20 +104,11 @@ class Application extends Component
             $this->parseTimeValue($workTime->toArray())
         );
         foreach ($convertedData as $field => $value) {
-            if (!isset($this->{$field}) && !property_exists($this, $field)) {
+            if (! isset($this->{$field}) && ! property_exists($this, $field)) {
                 continue;
             }
             $this->{$field} = $value;
         }
-    }
-
-    public function fetchNeedFixWorkingTimes()
-    {
-        $this->needFixs = WorkTime::query()
-            ->where('user_id', auth()->id())
-            ->where('status', WorkTimeStatus::NEED_FIX->value)
-            ->pluck('date')
-            ->all();
     }
 
     public function onSave()
@@ -127,20 +146,35 @@ class Application extends Component
 
             if ($validated->fails()) {
                 $this->setErrorBag($validated->getMessageBag());
+
                 return;
             }
 
-            $workingTime = $this->getWorkingDate($this->date);
+            if (! empty($this->workTimeId)) {
+                $workingTime = $this->getWorkingById($this->workTimeId);
+            } elseif (! empty($this->date)) {
+                $workingTime = $this->getWorkingDate($this->date);
+            }
+
             if (empty($workingTime)) {
                 $workingTime = new WorkTime();
             }
+
+            $errorMsg = $this->generateErrorWhenEdit($workingTime->status, $workingTime->id, $workingTime->date);
+            if (! empty($errorMsg)) {
+                $this->addError('common', $errorMsg);
+
+                return;
+            }
+
             $workingTimeData = array_merge(
                 $this->convertTimeValue($validationData),
-                $workingTime->id ? ['status' => $workingTime->status] : ['user_id' => auth()->id()],
+                ['status' => WorkTimeStatus::IN_PROGRESS->value],
+                $workingTime->id ? [] : ['user_id' => auth()->id()],
             );
             $workingTime->fill($workingTimeData)->save();
 
-            return redirect()->route('teacher.time.edit', ['date' => $this->date])
+            return redirect()->route('teacher.time.create', ['date' => $workingTime->date])
                 ->with('success', trans('The work time has been successfully updated.'));
         } catch (\Exception $exception) {
             $this->addError('common', $exception->getMessage());
@@ -204,13 +238,14 @@ class Application extends Component
         foreach ($timeColumns as $timeColumn) {
             if (empty($parseData[$timeColumn])) {
                 $parseData[$timeColumn] = 0;
+
                 continue;
             }
             $mang_ky_tu = str_split(Str::padLeft($parseData[$timeColumn], 4, 0));
 
-            $gio = $mang_ky_tu[0] . $mang_ky_tu[1];
-            $phut = $mang_ky_tu[2] . $mang_ky_tu[3];
-            $parseData[$timeColumn] = sprintf("%s:%s", $gio, $phut);
+            $gio = $mang_ky_tu[0].$mang_ky_tu[1];
+            $phut = $mang_ky_tu[2].$mang_ky_tu[3];
+            $parseData[$timeColumn] = sprintf('%s:%s', $gio, $phut);
         }
 
         return $parseData;
@@ -232,19 +267,76 @@ class Application extends Component
         foreach ($timeColumns as $timeColumn) {
             if (empty($parseData[$timeColumn])) {
                 $parseData[$timeColumn] = 0;
+
                 continue;
             }
 
-            $parseData[$timeColumn] = str_replace(":", '', $parseData[$timeColumn]);
+            $parseData[$timeColumn] = str_replace(':', '', $parseData[$timeColumn]);
         }
 
         return $parseData;
     }
 
+    protected function getWorkingById($id)
+    {
+        if (empty($id)) {
+            return null;
+        }
+
+        return WorkTime::where('user_id', auth()->id())
+            ->find($id);
+    }
+
     protected function getWorkingDate($date)
     {
+        if (empty($date)) {
+            return null;
+        }
+
         return WorkTime::where('user_id', auth()->id())
             ->where('date', $date)
             ->first();
+    }
+
+    public function onChangeDate($date)
+    {
+        $this->resetExcept('currentRoute');
+        $this->date = $date;
+        $this->fetchWorkingTimeData();
+    }
+
+    protected function generateNeedFix($id, $date)
+    {
+        return sprintf(
+            '<a class="alert-link" href="%s">%sの勤怠の修正依頼があります</a>',
+            route('teacher.time.edit', ['id' => $id]),
+            Carbon::parse($date)->format('Y年m月d')
+        );
+    }
+
+    public function getCanEditProperty()
+    {
+        $workingTime = null;
+        if (! empty($this->workTimeId)) {
+            $workingTime = $this->getWorkingById($this->workTimeId);
+        } elseif (! empty($this->date)) {
+            $workingTime = $this->getWorkingDate($this->date);
+        }
+        $isInEditPage = $this->currentRoute === 'teacher.time.edit';
+        if (empty($workingTime) && ! $isInEditPage) {
+            return true;
+        }
+
+        return $isInEditPage && $workingTime->status === WorkTimeStatus::NEED_FIX->value;
+    }
+
+    protected function generateErrorWhenEdit($status, $id = null, $date = null)
+    {
+        return match ($status) {
+            WorkTimeStatus::IN_PROGRESS->value => '勤怠申請済です（承認待ち）',
+            WorkTimeStatus::NEED_FIX->value => (! empty($id) && ! empty($date)) ? $this->generateNeedFix($id, $date) : null,
+            WorkTimeStatus::APPROVED->value => '勤怠申請済です（承認済)',
+            default => null
+        };
     }
 }

@@ -1,8 +1,11 @@
 <div class="container-fluid text-nowrap text-start">
+    @php
+        $canEdit = $this->canEdit;
+    @endphp
     @livewire('admin.common.alert')
     @error('common')
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ $message }}
+        {!! $message !!}
         <button type="button" class="btn-close" data-coreui-dismiss="alert" aria-label="Close"></button>
     </div>
     @enderror
@@ -23,14 +26,24 @@
                     <div>
                         <span class="description">申請した日付ではなく、稼働で発生した日付を入力してください。</span>
                     </div>
-                    <input class="form-control @error('date') is-invalid @enderror" type="date" id="application_date" wire:model="date">
+                    <input class="form-control @error('date') is-invalid @enderror"
+                           type="date" id="application_date"
+                           wire:model="date"
+                           wire:change="onChangeDate($event.target.value)"
+                    >
                     @error('date') <p class="fw-light text-danger fs-6 invalid-feedback">{{ $message }}</p> @enderror
                 </div>
         </div>
     </div>
     <div class="text-start mb-1">
         <div class="form-check form-switch form-check-inline">
-            <input class="form-check-input" type="checkbox" id="transportation-fee-check" name="transportation-fee-check" wire:model="use_transportation_expense" wire:click="toggleCheckbox('use_transportation_expense', $event.target.checked)" />
+            <input class="form-check-input" type="checkbox"
+                   id="transportation-fee-check"
+                   name="transportation-fee-check"
+                   wire:model="use_transportation_expense"
+                   wire:click="toggleCheckbox('use_transportation_expense', $event.target.checked)"
+                   @if(!$canEdit) disabled @endif
+            />
             <label class="form-check-label" for="transportation-fee-check">交通費の申請をする</label>
         </div>
     </div>
@@ -40,7 +53,12 @@
                     <div class="text-start mb-3">
                         <label class="form-label">交通費</label>
                         <span class="badge bg-danger mx-1">必須</span>
-                        <select class="form-select mb-2 @error('transportation_expense_type') is-invalid @enderror" id="price" wire:model="transportation_expense_type" wire:change="changeSelectValue('transportation_expense_type', $event.target.value)">
+                        <select class="form-select mb-2 @error('transportation_expense_type') is-invalid @enderror"
+                                id="price"
+                                wire:model="transportation_expense_type"
+                                @if(!$canEdit) disabled @endif
+                                wire:change="changeSelectValue('transportation_expense_type', $event.target.value)"
+                        >
                             <option value="0" selected="">なし</option>
                             <option value="1">渋谷〜池尻大橋（280円）</option>
                             <option value="2">その他</option>
@@ -48,6 +66,7 @@
                         @error('transportation_expense_type') <p class="fw-light text-danger fs-6 invalid-feedback">{{ $message }}</p> @enderror
                         <input class="form-control no-display @error('transportation_expense') is-invalid @enderror" type="number" id="other-price"
                                wire:model="transportation_expense"
+                               @if(!$canEdit) disabled @endif
                                @if($transportation_expense_type !==\App\Enums\TransportationExpenseType::OTHER->value)style="display: none;" @endif >
                         @error('transportation_expense') <p class="fw-light text-danger fs-6 invalid-feedback">{{ $message }}</p> @enderror
                     </div>
@@ -56,7 +75,11 @@
     </div>
     <div class="text-start mb-1">
         <div class="form-check form-switch form-check-inline">
-            <input class="form-check-input" type="checkbox" id="shift-check" wire:model="use_shift" wire:click="toggleCheckbox('use_shift', $event.target.checked)">
+            <input class="form-check-input" type="checkbox"
+                   id="shift-check" wire:model="use_shift"
+                   wire:click="toggleCheckbox('use_shift', $event.target.checked)"
+                   @if(!$canEdit) disabled @endif
+            >
             <label class="form-check-label" for="shift-check">シフト事務の申請をする</label>
         </div>
     </div>
@@ -72,13 +95,21 @@
                     <div class="text-start mb-3">
                         <label class="form-label">事務開始時刻</label>
                         <span class="badge bg-danger mx-1">必須</span>
-                        <input class="form-control @error('shift_start_time') is-invalid @enderror" type="time" wire:model="shift_start_time">
+                        <input class="form-control @error('shift_start_time') is-invalid @enderror"
+                               type="time"
+                               wire:model="shift_start_time"
+                               @if(!$canEdit) disabled @endif
+                        >
                         @error('shift_start_time') <p class="fw-light text-danger fs-6 invalid-feedback">{{ $message }}</p> @enderror
                     </div>
                     <div class="text-start mb-3">
                         <label class="form-label">事務開始終了</label>
                         <span class="badge bg-danger mx-1">必須</span>
-                        <input class="form-control @error('shift_end_time') is-invalid @enderror" type="time" wire:model="shift_end_time">
+                        <input class="form-control @error('shift_end_time') is-invalid @enderror"
+                               type="time"
+                               wire:model="shift_end_time"
+                               @if(!$canEdit) disabled @endif
+                        >
                         @error('shift_end_time') <p class="fw-light text-danger fs-6 invalid-feedback">{{ $message }}</p> @enderror
                     </div>
                     <div class="text-start mb-3">
@@ -87,7 +118,11 @@
                         <div class="text-start">
                             <span class="description">シフト事務の勤務時間のうち、休憩時間を記入してください。</span>
                         </div>
-                        <input class="form-control @error('shift_break_time') is-invalid @enderror" type="time" wire:model="shift_break_time">
+                        <input class="form-control @error('shift_break_time') is-invalid @enderror"
+                               type="time"
+                               wire:model="shift_break_time"
+                               @if(!$canEdit) disabled @endif
+                        >
                         @error('shift_break_time') <p class="fw-light text-danger fs-6 invalid-feedback">{{ $message }}</p> @enderror
                     </div>
                     <div class="text-start mb-3">
@@ -105,6 +140,7 @@
             <input class="form-check-input" type="checkbox" id="overwork-check"
                    wire:model="use_off_shift"
                    wire:click="toggleCheckbox('use_off_shift', $event.target.checked)"
+                   @if(!$canEdit) disabled @endif
             >
             <label class="form-check-label" for="formCheck-3">シフト外事務の申請をする</label>
         </div>
@@ -120,7 +156,11 @@
                         <div class="text-start">
                             <span class="description">質問対応で稼働した時間数を記入（開始・終了時刻ではありません。） <br> 10分なら00:10と記載。（フォームは時間：分になっているので注意してください） </span>
                         </div>
-                        <input class="form-control @error('off_shift_qa_time') is-invalid @enderror" type="time" wire:model="off_shift_qa_time">
+                        <input class="form-control @error('off_shift_qa_time') is-invalid @enderror"
+                               type="time"
+                               wire:model="off_shift_qa_time"
+                               @if(!$canEdit) disabled @endif
+                        >
                         @error('off_shift_qa_time') <p class="fw-light text-danger fs-6 invalid-feedback">{{ $message }}</p> @enderror
                     </div>
                     <div class="text-start mb-3">
@@ -128,7 +168,11 @@
                         <div class="text-start">
                             <span class="description">特訓を超過した分の事務の時間数を記入（開始・終了時刻ではありません。） <br> 10分なら00:10と記載。（フォームは時間：分になっているので注意してください） </span>
                         </div>
-                        <input class="form-control @error('off_shift_training_time') is-invalid @enderror" type="time" wire:model="off_shift_training_time">
+                        <input class="form-control @error('off_shift_training_time') is-invalid @enderror"
+                               type="time"
+                               wire:model="off_shift_training_time"
+                               @if(!$canEdit) disabled @endif
+                        >
                         @error('off_shift_training_time') <p class="fw-light text-danger fs-6 invalid-feedback">{{ $message }}</p> @enderror
                     </div>
                     <div class="text-start mb-3">
@@ -136,7 +180,11 @@
                         <div class="text-start">
                             <span class="description"> 生徒の当欠により事務作業した分の時間数を記入（開始・終了時刻ではありません） <br> 10分なら00:10と記載。（フォームは時間：分になっているので注意してください） </span>
                         </div>
-                        <input class="form-control @error('off_shift_absent_time') is-invalid @enderror" type="time" wire:model="off_shift_absent_time">
+                        <input class="form-control @error('off_shift_absent_time') is-invalid @enderror"
+                               type="time"
+                               wire:model="off_shift_absent_time"
+                               @if(!$canEdit) disabled @endif
+                        >
                         @error('off_shift_absent_time') <p class="fw-light text-danger fs-6 invalid-feedback">{{ $message }}</p> @enderror
                     </div>
                     <div class="text-start mb-3">
@@ -144,7 +192,11 @@
                         <div class="text-start">
                             <span class="description"> 校舎長からシフト外で事務を依頼さ稼働した分のの時間数を記入（開始・終了時刻ではありません） <br> 10分なら00:10と記載。（フォームは時間：分になっているので注意してください） </span>
                         </div>
-                        <input class="form-control @error('off_shift_additional_time') is-invalid @enderror" type="time" wire:model="off_shift_additional_time">
+                        <input class="form-control @error('off_shift_additional_time') is-invalid @enderror"
+                               type="time"
+                               wire:model="off_shift_additional_time"
+                               @if(!$canEdit) disabled @endif
+                        >
                         @error('off_shift_additional_time') <p class="fw-light text-danger fs-6 invalid-feedback">{{ $message }}</p> @enderror
                     </div>
                     <div class="text-start mb-3">
@@ -162,6 +214,7 @@
                                        wire:model="off_shift_break_time_type"
                                        @if(empty($off_shift_break_time_type)) checked @endif
                                        wire:click="toggleCheckbox('off_shift_break_time_type', 0)"
+                                       @if(!$canEdit) disabled @endif
                                 >
                                 <label class="form-check-label" for="formCheck-4">追加事務では休憩時間をとっていない</label>
                             </div>
@@ -172,6 +225,7 @@
                                        wire:model="off_shift_break_time_type"
                                        @if(!empty($off_shift_break_time_type)) checked @endif
                                        wire:click="toggleCheckbox('off_shift_break_time_type', 1)"
+                                       @if(!$canEdit) disabled @endif
                                 >
                                 <label class="form-check-label" for="formCheck-1">追加事務には休憩時間を除いた時間を入力した</label>
                             </div>
@@ -182,7 +236,11 @@
                         <div class="text-start">
                             <span class="description">校舎長からの指示でブログを作成した場合、作成したブログのURL（GoogleドキュメントのURL、もしくはブログのURL)を貼り付け</span>
                         </div>
-                        <input class="form-control @error('off_shift_blog_url') is-invalid @enderror" type="url" wire:model="off_shift_blog_url">
+                        <input class="form-control @error('off_shift_blog_url') is-invalid @enderror"
+                               type="url"
+                               wire:model="off_shift_blog_url"
+                               @if(!$canEdit) disabled @endif
+                        >
                         @error('off_shift_blog_url') <p class="fw-light text-danger fs-6 invalid-feedback">{{ $message }}</p> @enderror
                     </div>
                     <div class="text-start mb-3">
@@ -190,7 +248,10 @@
                         <div class="text-start">
                             <span class="description">シフト外事務についての備考。シフト外事務の詳細を記載してください。 <br>※所属校舎以外の校舎でのシフト外事務の場合は【⚪︎⚪︎公でのシフト外事務稼働】と記載してください。 </span>
                         </div>
-                        <textarea class="form-control @error('off_shift_notes') is-invalid @enderror" wire:model="off_shift_notes"></textarea>
+                        <textarea class="form-control @error('off_shift_notes') is-invalid @enderror"
+                                  wire:model="off_shift_notes"
+                                  @if(!$canEdit) disabled @endif
+                        ></textarea>
                         @error('off_shift_notes') <p class="fw-light text-danger fs-6 invalid-feedback">{{ $message }}</p> @enderror
                     </div>
             </div>
@@ -201,6 +262,7 @@
             <input class="form-check-input" type="checkbox" id="night-check"
                    wire:model="use_night_work"
                    wire:click="toggleCheckbox('use_night_work', $event.target.checked)"
+                   @if(!$canEdit) disabled @endif
             >
             <label class="form-check-label" for="night-check">深夜事務</label>
         </div>
@@ -216,7 +278,11 @@
                         <div class="text-start">
                             <span class="description">事務で22時を過ぎた稼働時間があれば時間数を記入してください。 <br>例）22:10まで勤務したら00:10と記入 </span>
                         </div>
-                        <input class="form-control @error('night_time') is-invalid @enderror" type="time" wire:model="night_time">
+                        <input class="form-control @error('night_time') is-invalid @enderror"
+                               type="time"
+                               wire:model="night_time"
+                               @if(!$canEdit) disabled @endif
+                        >
                         @error('night_time') <p class="fw-light text-danger fs-6 invalid-feedback">{{ $message }}</p> @enderror
                     </div>
             </div>
@@ -234,6 +300,7 @@
                                wire:model="training_type"
                                wire:click="changeSelectValue('training_type', 0)"
                                @if(!empty($training_type)) checked="true" @endif
+                               @if(!$canEdit) disabled @endif
                             >
                             <label class="form-check-label" for="additional-work-none">本日の特訓はなし</label>
                         </div>
@@ -243,10 +310,15 @@
                                wire:model="training_type"
                                wire:click="changeSelectValue('training_type', 1)"
                                @if(!empty($training_type)) checked="true" @endif
+                               @if(!$canEdit) disabled @endif
                             >
                             <label class="form-check-label" for="additional-work-yes">時間数を入れる</label>
                         </div>
-                        <input class="form-control @error('training_time') is-invalid @enderror" type="time" wire:model="training_time">
+                        <input class="form-control @error('training_time') is-invalid @enderror"
+                               type="time"
+                               wire:model="training_time"
+                               @if(!$canEdit) disabled @endif
+                        >
                         @error('training_time') <p class="fw-light text-danger fs-6 invalid-feedback">{{ $message }}</p> @enderror
                     </div>
                 </div>
@@ -260,10 +332,15 @@
                     <div>
                         <span class="description">・所属校舎以外の校舎で発生した【交通費】【シフト事務】の場合、他校舎勤務の旨を記載してください <br>・交通費で【その他】を選択した場合はその他を選択した理由と経路を記載してください。 <br>例：急遽18時から池尻校のシフト外事務に入る事になったため。 <br>内訳：大学最寄りの◯◯線・・駅～武田駅（XXX円）＋◯◯線武田駅～池尻駅（XXX円）＋◯◯線池尻駅～自宅駅（XXX円） </span>
                     </div>
-                    <textarea class="form-control @error('note') is-invalid @enderror" wire:model="note"></textarea>
+                    <textarea class="form-control @error('note') is-invalid @enderror"
+                              @if(!$canEdit) disabled @endif
+                              wire:model="note"></textarea>
                     @error('note') <p class="fw-light text-danger fs-6 invalid-feedback">{{ $message }}</p> @enderror
                 </div>
         </div>
     </div>
-    <button class="btn btn-primary" type="button" wire:click.prevent="onSave">申請する</button>
+    <button class="btn btn-primary" type="button"
+            wire:click.prevent="onSave"
+            @if(!$canEdit) disabled @endif
+    >申請する</button>
 </div>

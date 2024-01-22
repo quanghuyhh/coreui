@@ -2,16 +2,9 @@
 
 namespace App\Livewire\Auth;
 
-use App\Providers\RouteServiceProvider;
-use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
-
-use Livewire\Attributes\Validate;
-use Livewire\Form;
 
 class Login extends Component
 {
@@ -20,7 +13,6 @@ class Login extends Component
     public string $password = '';
 
     public bool $remember = false;
-
 
     public function render()
     {

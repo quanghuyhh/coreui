@@ -9,10 +9,13 @@ use Livewire\Component;
 class EditShiftForm extends Component
 {
     public int $shiftId;
+
     public array $shift = [];
+
     public array $shiftDates = [];
 
     public array $availableTeachers = [];
+
     public array $shiftTeachers = [];
 
     public bool $isPublic = false;
@@ -43,6 +46,7 @@ class EditShiftForm extends Component
         $shift->status = $this->isPublic ? ShiftStatusEnum::COMPLETED->value : ShiftStatusEnum::IN_PROGRESS->value;
 
         $shift->save();
+
         return redirect()->route('admin.shifts.index')
             ->with('success', trans('The shift has been successfully updated.'));
     }
@@ -50,10 +54,10 @@ class EditShiftForm extends Component
     public function generateShiftTeachers()
     {
         $applied = [];
-        foreach($this->shift['data']['days'] as $index => $day) {
+        foreach ($this->shift['data']['days'] as $index => $day) {
             $slotDay = $day['day'];
             $shiftSlots = $this->shift['data']['shift-slots'][$slotDay] ?? [];
-            foreach($shiftSlots as $slotTime => $status) {
+            foreach ($shiftSlots as $slotTime => $status) {
                 $applied[$slotDay][$slotTime] = $this->shiftTeachers[$slotDay][$slotTime] ?? null;
             }
         }

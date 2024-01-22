@@ -9,11 +9,12 @@ class ShiftController extends Controller
     public function index()
     {
         $shifts = Shift::all();
+
         return view('shifts.index', [
             'shifts' => $shifts,
             'breadcrumbs' => [
-                ['name' => 'シフト管理']
-            ]
+                ['name' => 'シフト管理'],
+            ],
         ]);
     }
 
@@ -23,7 +24,7 @@ class ShiftController extends Controller
             'breadcrumbs' => [
                 ['name' => 'シフト管理', 'url' => route('admin.shifts.index')],
                 ['name' => '時間枠編集'],
-            ]
+            ],
         ]);
     }
 
@@ -34,10 +35,9 @@ class ShiftController extends Controller
             'breadcrumbs' => [
                 ['name' => 'シフト管理', 'url' => route('admin.shifts.index')],
                 ['name' => '時間枠編集'],
-            ]
+            ],
         ]);
     }
-
 
     public function show()
     {
@@ -48,12 +48,13 @@ class ShiftController extends Controller
     {
         try {
             $shift = Shift::findOrFail($shiftId);
+
             return view('shifts.edit-shift', [
                 'id' => $shiftId, 'shift' => $shift,
                 'breadcrumbs' => [
                     ['name' => 'シフト管理', 'url' => route('admin.shifts.index')],
-                    ['name' => sprintf("シフト作成 (%s)", $shift->month->format('Y年m月'))],
-                ]
+                    ['name' => sprintf('シフト作成 (%s)', $shift->month->format('Y年m月'))],
+                ],
             ]);
         } catch (\Exception $exception) {
             return redirect('/');

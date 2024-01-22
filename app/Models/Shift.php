@@ -26,6 +26,7 @@ class Shift extends Model
     public function scopePublished(Builder $builder)
     {
         $table = $this->getTable();
+
         return $builder->where("$table.status", ShiftStatusEnum::COMPLETED->value);
     }
 

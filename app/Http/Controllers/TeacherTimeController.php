@@ -8,8 +8,8 @@ class TeacherTimeController extends Controller
     {
         return view('time.create', [
             'breadcrumbs' => [
-                ['name' => '勤怠申請']
-            ]
+                ['name' => '勤怠申請'],
+            ],
         ]);
     }
 
@@ -17,8 +17,8 @@ class TeacherTimeController extends Controller
     {
         return view('time.edit', [
             'breadcrumbs' => [
-                ['name' => '勤怠申請']
-            ]
+                ['name' => '勤怠申請'],
+            ],
         ]);
     }
 }
