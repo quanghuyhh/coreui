@@ -48,7 +48,7 @@ class Application extends Component
 
     public $off_shift_notes = null;
 
-    public $use_night_work = null;
+    public ?bool $use_night_work = false;
 
     public $night_time = null;
 
@@ -146,7 +146,7 @@ class Application extends Component
 
             if ($validated->fails()) {
                 $this->setErrorBag($validated->getMessageBag());
-
+                dd($validated->getMessageBag());
                 return;
             }
 
@@ -163,7 +163,7 @@ class Application extends Component
             $errorMsg = $this->generateErrorWhenEdit($workingTime->status, $workingTime->id, $workingTime->date);
             if (! empty($errorMsg)) {
                 $this->addError('common', $errorMsg);
-
+                dd($errorMsg);
                 return;
             }
 
@@ -178,6 +178,7 @@ class Application extends Component
                 ->with('success', trans('The work time has been successfully updated.'));
         } catch (\Exception $exception) {
             $this->addError('common', $exception->getMessage());
+            dd($exception);
         }
     }
 
@@ -233,6 +234,7 @@ class Application extends Component
             'off_shift_absent_time',
             'off_shift_additional_time',
             'night_work_time',
+            'night_time',
             'training_time',
         ];
         foreach ($timeColumns as $timeColumn) {
@@ -241,11 +243,11 @@ class Application extends Component
 
                 continue;
             }
-            $mang_ky_tu = str_split(Str::padLeft($parseData[$timeColumn], 4, 0));
+            $explodes = str_split(Str::padLeft($parseData[$timeColumn], 4, 0));
 
-            $gio = $mang_ky_tu[0].$mang_ky_tu[1];
-            $phut = $mang_ky_tu[2].$mang_ky_tu[3];
-            $parseData[$timeColumn] = sprintf('%s:%s', $gio, $phut);
+            $hour = $explodes[0].$explodes[1];
+            $minutes = $explodes[2].$explodes[3];
+            $parseData[$timeColumn] = sprintf('%s:%s', $hour, $minutes);
         }
 
         return $parseData;
@@ -262,6 +264,7 @@ class Application extends Component
             'off_shift_absent_time',
             'off_shift_additional_time',
             'night_work_time',
+            'night_time',
             'training_time',
         ];
         foreach ($timeColumns as $timeColumn) {
@@ -334,7 +337,9 @@ class Application extends Component
     {
         return match ($status) {
             WorkTimeStatus::IN_PROGRESS->value => '勤怠申請済です（承認待ち）',
-            WorkTimeStatus::NEED_FIX->value => (! empty($id) && ! empty($date)) ? $this->generateNeedFix($id, $date) : null,
+            WorkTimeStatus::NEED_FIX->value => !$this->can_edit && (!empty($id) && ! empty($date))
+                ? $this->generateNeedFix($id, $date)
+                : null,
             WorkTimeStatus::APPROVED->value => '勤怠申請済です（承認済)',
             default => null
         };
