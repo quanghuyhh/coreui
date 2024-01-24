@@ -37,4 +37,9 @@ class WorkTime extends Model
         'training_time',
         'note',
     ];
+
+    public function teacher()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

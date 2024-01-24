@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminTimeController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
@@ -62,6 +63,7 @@ Route::group(['middleware' => 'web'], function() {
             Route::get('/{id}/edit-shift', [ShiftController::class, 'editShift'])->name('editShift');
         });
         Route::resource('/shifts', ShiftController::class);
+        Route::resource('/times', AdminTimeController::class);
     });
 
     Route::group(['prefix' => 'teacher', 'as' => 'teacher.', 'middleware' => 'role:teacher'], function () {

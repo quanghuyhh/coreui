@@ -24,6 +24,13 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.times.index') }}" wire:navigate>
+                    <svg class="nav-icon">
+                        <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-user') }}"></use>
+                    </svg> 勤怠承認
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.roles.index') }}" wire:navigate>
                     <svg class="nav-icon">
                         <use xlink:href="{{ asset('/assets/admin/vendors/@coreui/icons/svg/free.svg#cil-drop') }}"></use>
